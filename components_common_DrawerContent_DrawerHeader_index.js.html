@@ -29,13 +29,15 @@
             <pre class="prettyprint source linenums"><code>// TOP LEVEL IMPORTS
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { DrawerItems, SafeAreaView } from 'react-navigation';
 // LIB
 import { colorConfig, stylesConfig } from '../../../../lib/config';
 // REDUX
 import { connect } from 'react-redux';
 import * as actions from '../../../../redux/actions';
+// COMPONENTS
+import Avatar from '../../Avatar';
 
 // DOCS
 // =========================
@@ -45,20 +47,48 @@ import * as actions from '../../../../redux/actions';
  * @memberof DrawerContent
  */
 
-const Left = () => {
+
+
+const DrawerHeaderLeft = ({ appStore }) => {
+    const { parentsList, selectedParent } = appStore;
+    let otherParent = parentsList.filter(item => item.id === selectedParent);
+    if (!otherParent[0]) { return null };
     return (
-        &lt;View style={{display: 'flex', flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-            &lt;View style={{height: 50, width: 50, borderRadius: 25, backgroundColor: '#fff', margin: 5}} />
-            &lt;View style={{height: 50, width: 50, borderRadius: 25, backgroundColor: 'teal', margin: 5}} />
+        &lt;View style={s.column}>
+            &lt;Avatar 
+                size={50}
+                backgroundColor='#fff'
+                textColor='green'
+                onPress={() => {}} 
+                parent={{ firstName: 'M', lastName: 'E'}} 
+            />
+            &lt;Avatar 
+                size={50}
+                image={otherParent[0].avatar}
+                backgroundColor={otherParent[0].color}
+                onPress={() => {}} 
+                parent={otherParent[0]} 
+            />
         &lt;/View>
     )
 }
 
-const Right = () => {
+
+const DrawerHeaderRight = ({ appStore, onSelectParent }) => {
+    const { parentsList, selectedParent } = appStore;
+    let otherParents = parentsList.filter(item => item.id !== selectedParent);
+    if (!otherParents) { return null };
+    
     return (
-        &lt;View style={{display: 'flex', flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingLeft: 20}}>
-          &lt;View style={{height: 30, width: 30, borderRadius: 15, backgroundColor: 'yellow', margin: 10}} />
-          &lt;View style={{height: 30, width: 30, borderRadius: 15, backgroundColor: 'orange', margin: 10}} />
+        &lt;View style={[s.column, {paddingLeft: 20}]}>
+            {otherParents.map((parent, i) => (
+                &lt;Avatar 
+                    key={parent.id} 
+                    backgroundColor={parent.color}
+                    onPress={onSelectParent} 
+                    parent={parent} 
+                />
+            ))}
         &lt;/View>
     )
 }
@@ -66,11 +96,17 @@ const Right = () => {
 // EXPORTED COMPONENET
 // =========================
 class DrawerHeader extends React.PureComponent {
+    onSelectParent = (selectedParent) => {
+        this.props.onAppStoreChange({ selectedParent });
+    }
     render(){
         return (
             &lt;View style={s.container}>
-                &lt;Left />
-                &lt;Right />
+                &lt;DrawerHeaderLeft {...this.props} />
+                &lt;DrawerHeaderRight 
+                    {...this.props} 
+                    onSelectParent={this.onSelectParent} 
+                />
             &lt;/View>
         )
     }
@@ -80,6 +116,13 @@ class DrawerHeader extends React.PureComponent {
 // STYLES
 // =========================
 const s = StyleSheet.create({
+    column: {
+        display: 'flex', 
+        flex: 1, 
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        justifyContent: 'center'
+    },
     container: {
         position: 'absolute',
         paddingTop: 58,
@@ -107,9 +150,14 @@ DrawerHeader.defaultProps = {
 
 }
 
+const mapStateToProps = ({ appStore }) => {
+    return { appStore }
+  };
+
+  
 // EXPORT
 // =========================
-export default connect()(DrawerHeader);</code></pre>
+export default connect(mapStateToProps, actions)(DrawerHeader);</code></pre>
         </article>
     </section>
 
@@ -119,13 +167,13 @@ export default connect()(DrawerHeader);</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-_%2520app_reducer.html">: app_reducer</a></li><li><a href="module-_%2520onboarding_reducer.html">: onboarding_reducer</a></li></ul><h3>Namespaces</h3><ul><li><a href="AppHeader.html">AppHeader</a></li><li><a href="AppHeader.ToggleText.html">ToggleText</a></li><li><a href="AuthHeaderArea.html">AuthHeaderArea</a></li><li><a href="BackButton.html">BackButton</a></li><li><a href="DrawerContent.html">DrawerContent</a></li><li><a href="DrawerContent.DrawerHeader.html">DrawerHeader</a></li><li><a href="EmailInput.html">EmailInput</a></li><li><a href="EmptyState.html">EmptyState</a></li><li><a href="ForgotPasswordForm.html">ForgotPasswordForm</a></li><li><a href="ForgotPasswordForm.SuccessModalContent.html">SuccessModalContent</a></li><li><a href="FormInputError.html">FormInputError</a></li><li><a href="FormLabel.html">FormLabel</a></li><li><a href="HeaderText.html">HeaderText</a></li><li><a href="LinkText.html">LinkText</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginForm.LoginFormFields.html">LoginFormFields</a></li><li><a href="MenuButton.html">MenuButton</a></li><li><a href="PasswordInput.html">PasswordInput</a></li><li><a href="RegularButton.html">RegularButton</a></li><li><a href="ServerError.html">ServerError</a></li><li><a href="SignupForm.html">SignupForm</a></li><li><a href="SignupForm.SignupFormFields.html">SignupFormFields</a></li><li><a href="TermsAndPoliciesLink.html">TermsAndPoliciesLink</a></li><li><a href="TermsAndPoliciesLink.TermsLink.html">TermsLink</a></li><li><a href="UiHelpers.html">UiHelpers</a></li><li><a href="UiHelpers.getHomeNavOptions.html">getHomeNavOptions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CurrentBillsScreen">CurrentBillsScreen</a></li><li><a href="global.html#NotesScreen">NotesScreen</a></li><li><a href="global.html#PaymentsScreen">PaymentsScreen</a></li><li><a href="global.html#SupportTermsScreen">SupportTermsScreen</a></li><li><a href="global.html#TransactionsScreen">TransactionsScreen</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-_%2520app_reducer.html">: app_reducer</a></li><li><a href="module-_%2520onboarding_reducer.html">: onboarding_reducer</a></li></ul><h3>Namespaces</h3><ul><li><a href="AppHeader.html">AppHeader</a></li><li><a href="AppHeader.ToggleText.html">ToggleText</a></li><li><a href="AuthHeaderArea.html">AuthHeaderArea</a></li><li><a href="Avatar.html">Avatar</a></li><li><a href="BackButton.html">BackButton</a></li><li><a href="DrawerContent.html">DrawerContent</a></li><li><a href="DrawerContent.DrawerHeader.html">DrawerHeader</a></li><li><a href="EmailInput.html">EmailInput</a></li><li><a href="EmptyState.html">EmptyState</a></li><li><a href="ForgotPasswordForm.html">ForgotPasswordForm</a></li><li><a href="ForgotPasswordForm.SuccessModalContent.html">SuccessModalContent</a></li><li><a href="FormInputError.html">FormInputError</a></li><li><a href="FormLabel.html">FormLabel</a></li><li><a href="HeaderText.html">HeaderText</a></li><li><a href="LinkText.html">LinkText</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginForm.LoginFormFields.html">LoginFormFields</a></li><li><a href="MenuButton.html">MenuButton</a></li><li><a href="PasswordInput.html">PasswordInput</a></li><li><a href="RegularButton.html">RegularButton</a></li><li><a href="ServerError.html">ServerError</a></li><li><a href="SignupForm.html">SignupForm</a></li><li><a href="SignupForm.SignupFormFields.html">SignupFormFields</a></li><li><a href="TermsAndPoliciesLink.html">TermsAndPoliciesLink</a></li><li><a href="TermsAndPoliciesLink.TermsLink.html">TermsLink</a></li><li><a href="UiHelpers.html">UiHelpers</a></li><li><a href="UiHelpers.getHomeNavOptions.html">getHomeNavOptions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CurrentBillsScreen">CurrentBillsScreen</a></li><li><a href="global.html#NotesScreen">NotesScreen</a></li><li><a href="global.html#PaymentsScreen">PaymentsScreen</a></li><li><a href="global.html#SupportTermsScreen">SupportTermsScreen</a></li><li><a href="global.html#TransactionsScreen">TransactionsScreen</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Jan 21 2018 15:30:53 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Jan 21 2018 17:24:40 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>
